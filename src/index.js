@@ -38,6 +38,7 @@ let currentPiece = null;
 let currentX = 0;
 let currentY = 0;
 let score = 0;
+let highScore = Number(localStorage.getItem("stack-overflown-high-score") || 0);
 let gameOver = false;
 let isPaused = false;
 let dropCounter = 0;
@@ -59,6 +60,8 @@ function init() {
 
   // Set initial target pattern
   setNewTargetPattern();
+
+  updateScore();
 
   // Spawn first piece
   spawnPiece();
@@ -269,6 +272,10 @@ function checkPatternMatch() {
       if (matchesPattern(startRow, startCol)) {
         clearPattern(startRow, startCol);
         score += 100;
+        if (score > highScore) {
+          highScore = score;
+          localStorage.setItem("stack-overflown-high-score", String(highScore));
+        }
         updateScore();
         setNewTargetPattern();
         return;
@@ -307,6 +314,7 @@ function clearPattern(startRow, startCol) {
 // Update score display
 function updateScore() {
   document.getElementById("score").textContent = score;
+  document.getElementById("high-score").textContent = highScore;
 }
 
 // Handle keyboard input
@@ -345,7 +353,6 @@ function handleKeyPress(e) {
 // Toggle pause
 function togglePause() {
   isPaused = !isPaused;
-  document.getElementById("status").textContent = isPaused ? "Paused" : "Playing...";
 }
 
 // End game
